@@ -11,6 +11,15 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.movie_ratings
+    @selected_rankings = (params[:ratings].present? ? params[:ratings] : [])
+    if @selected_rankings != nil
+      @check_box_tag = params[:ratings] || session[:ratings]
+      flash[:notice] = @check_box_tag
+      flash.keep
+    else
+      flash[:notice] = "hello"
+    end
     if params[:sort] != nil
       @sort = params[:sort] || session[:sort]
       session[:sort] = @sort
