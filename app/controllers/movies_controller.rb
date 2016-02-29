@@ -12,10 +12,16 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.movie_ratings
-    if session[:ratings] == nil && params[:ratings] == nil
+    if params[:ratings] == nil
+      if session[:ratings] != nil
+        redirect_to :action => 'index', :sort => @sort, :ratings => session[:ratings]
+      else
         params[:ratings] = Movie.start_ratings
+      end
     end
+
     @selected_rankings = (params[:ratings].present? ? params[:ratings] : session[:ratings])
+    
     if params[:sort] != nil || session[:sort] != nil
       @sort = params[:sort] || session[:sort]
       session[:sort] = @sort
