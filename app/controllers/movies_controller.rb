@@ -20,21 +20,21 @@ class MoviesController < ApplicationController
       end
     end
 
-    @selected_rankings = (params[:ratings].present? ? params[:ratings] : session[:ratings])
+    @selected_ratings = (params[:ratings].present? ? params[:ratings] : [])
     
     if params[:sort] != nil || session[:sort] != nil
       @sort = params[:sort] || session[:sort]
       session[:sort] = @sort
-      if @selected_rankings != nil
+      if @selected_ratrings != nil
         #@check_box_tag = @selected_rankings
         #flash[:notice] = @check_box_tag
-        session[:ratings] = @selected_rankings
-        @movies = Movie.where(:rating => @selected_rankings.keys).order @sort
+        session[:ratings] = @selected_ratings
+        @movies = Movie.where(:rating => @selected_ratings.keys).order @sort
       end
     else
-      if @selected_rankings != nil
-        session[:sort] = @selected_rankings
-        @movies = Movie.where(:rating => @selected_rankings.keys)
+      if @selected_ratings != nil
+        session[:ratings] = @selected_ratings
+        @movies = Movie.where(:rating => @selected_ratings.keys)
       else
         @movies = Movie.all
       end
