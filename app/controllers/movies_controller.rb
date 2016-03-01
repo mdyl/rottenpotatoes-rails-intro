@@ -12,33 +12,19 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.movie_ratings
+    @sort = params[:sort] || session[:sort]
     if params[:ratings] == nil
       if session[:ratings] != nil
-        redirect_to :action => 'index', :sort => @sort, :ratings => session[:ratings]
+        redirect_to :action => 'index', :sort => params[:sort] || session[:sort], :ratings => session[:ratings]
       else
-        params[:ratings] = Movie.start_ratings
+        params[:ratings] =  {'G' => 'G', 'PG' => 'PG', 'PG-13' => 'PG-13', 'R' => 'R'}
       end
     end
 
     @selected_rankings = (params[:ratings].present? ? params[:ratings] : session[:ratings])
-    
-    if params[:sort] != nil || session[:sort] != nil
-      @sort = params[:sort] || session[:sort]
-      session[:sort] = @sort
-      if @selected_rankings != nil
-        #@check_box_tag = @selected_rankings
-        #flash[:notice] = @check_box_tag
-        session[:ratings] = @selected_rankings
-        @movies = Movie.where(:rating => @selected_rankings.keys).order @sort
-      end
-    else
-      if @selected_rankings != nil
-        session[:sort] = @selected_rankings
-        @movies = Movie.where(:rating => @selected_rankings.keys)
-      else
-        @movies = Movie.all
-      end
-    end
+    session[:ratings] = @selected_rankings
+    session[:sort] = @sort
+    @movies = Movie.where(:rating => @selected_rankings.keys).order @sort    
    
   end
 
